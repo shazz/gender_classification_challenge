@@ -6,6 +6,7 @@
 # (C) 2016 - Shazz 
 # Under MIT license
 
+# classifiers
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -13,6 +14,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 
+# accuracy scoring
 from sklearn.metrics import accuracy_score
 
 classifier_names = ["Decision Tree",
@@ -60,12 +62,16 @@ for name, clf in zip(classifier_names, classifier_classes):
     
     # predict on test data
     prediction = clf.predict(X_test)
+    # compute accuracy
     accuracy = accuracy_score(Y_test, prediction)
-    if accuracy >= max_accuracy:
-        best_classifiers.append(name)
+    
+    # check if this is the best
+    if accuracy > max_accuracy:
+        best_classifiers = [name]
         max_accuracy = accuracy
+    elif accuracy == max_accuracy:
+        best_classifiers.append(name)
     
     print("Using classifier", name, X_test, "are", prediction,"=> accuracy", accuracy)
    
 print("The most accurate classifiers are", best_classifiers,"with",max_accuracy*100,"% accuracy")
-
