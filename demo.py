@@ -1,8 +1,10 @@
 #
-# Lesson #1 challenge from Siralogy - Introduction - Learn Python for Data Science #1
+# Lesson #1 challenge from Sirajology - Introduction - Learn Python for Data Science #1
 # https://www.youtube.com/watch?v=T5pRlIbr6gg
-# 
-#
+# Added a few classifiers
+
+# (C) 2016 - Shazz 
+# Under MIT license
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
@@ -18,9 +20,9 @@ classifier_names = ["Decision Tree",
          "Linear Support Vector Machine", 
          "Radial Basic Function Support Vector Machine", 
          "Random Forest", 
-         "Neural Net", 
+         "Neural Network", 
          "AdaBoost",
-         "Naive Bayes"]
+         "Gaussian Naive Bayes"]
 
 classifier_classes = [
     DecisionTreeClassifier(),
