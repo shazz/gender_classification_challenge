@@ -54,16 +54,18 @@ Y_test = ['male', 'male', 'male', 'female',
 
 # train and check the model against the test data for each classifier
 max_accuracy = 0
+best_classifiers = []
 for name, clf in zip(classifier_names, classifier_classes):     
     clf = clf.fit(X_train, Y_train)
     
     # predict on test data
     prediction = clf.predict(X_test)
     accuracy = accuracy_score(Y_test, prediction)
-    if accuracy > max_accuracy:
-        best_classifier = name
+    if accuracy >= max_accuracy:
+        best_classifiers.append(name)
         max_accuracy = accuracy
     
     print("Using classifier", name, X_test, "are", prediction,"=> accuracy", accuracy)
    
-print("The most accurate was", best_classifier,"(",max_accuracy*100,"% )")
+print("The most accurate classifiers are", best_classifiers,"with",max_accuracy*100,"% accuracy")
+
