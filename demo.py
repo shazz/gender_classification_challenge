@@ -42,7 +42,7 @@ Y = ['male', 'male', 'female',
      'male', 'male']
 
 # train and check the model against the test data for each classifier
-iterations = 100
+iterations = 50
 results = {}
 for itr in range(iterations):    
     # Resuffle training/testing datasets by sampling randomly 80/20% of the input data 
@@ -64,7 +64,8 @@ for itr in range(iterations):
         print(itr, "- classifier", classifier, "says", X_test, "are", prediction,"=> accuracy", accuracy)
        
 maxscore = results[max(results, key=results.get)]
-print("The most accurate classifier over", iterations, "iterations is:")
-for result in results:
-    if results[result] == maxscore:
-        print("\t-",result,"with",results[result]/iterations*100,"% accuracy")
+print("The most accurate classifiers over", iterations, "iterations are:")
+d_view = [ (v,k) for k,v in results.items() ]
+d_view.sort(reverse=True) # natively sort tuples by first element
+for v,k in d_view:
+    print("\t-",k,"with",v/iterations*100,"% accuracy")     
