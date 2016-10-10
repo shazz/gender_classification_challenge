@@ -63,9 +63,8 @@ for itr in range(iterations):
         
         print(itr, "- classifier", classifier, "says", X_test, "are", prediction,"=> accuracy", accuracy)
        
-maxscore = results[max(results, key=results.get)]
-print("The most accurate classifiers over", iterations, "iterations are:")
-d_view = [ (v,k) for k,v in results.items() ]
-d_view.sort(reverse=True) # natively sort tuples by first element
-for v,k in d_view:
+print("Classifiers average scores over", iterations, "iterations are:")
+halloffame = [ (v,k) for k,v in results.items() ]
+halloffame.sort(reverse=True)
+for v,k in halloffame:
     print("\t-",k,"with",v/iterations*100,"% accuracy")     
