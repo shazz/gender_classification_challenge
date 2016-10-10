@@ -34,24 +34,17 @@ classifiers = {
 X = [[181, 80, 44], [177, 70, 43], [160, 60, 38], 
      [154, 54, 37], [166, 65, 40], [190, 90, 47], 
      [175, 64, 39], [177, 70, 40], [159, 55, 37], 
-     [171, 75, 42], [181, 85, 43], [183, 82, 45],
-     [189, 92, 47], [175, 70, 41], [155, 47, 38],
-     [144, 36, 36], [180, 60, 39], [195, 110, 45]
-     ]
+     [171, 75, 42], [181, 85, 43]]
 # labels
 Y = ['male', 'male', 'female', 
      'female', 'male', 'male', 
      'female', 'female', 'female', 
-     'male', 'male', 'male',
-     'male', 'male', 'female',
-     'female', 'female', 'male']
+     'male', 'male']
 
 # train and check the model against the test data for each classifier
-iterations = len(X)
+iterations = 50
 results = {}
-for itr in range(iterations):
-    print("Iteration", itr)
-    
+for itr in range(iterations):    
     # Resuffle training/testing datasets by sampling randomly 80/20% of the input data 
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)    
     
@@ -68,7 +61,7 @@ for itr in range(iterations):
         else:
             results[classifier] = accuracy
         
-        print("Classifier says", classifier, X_test, "are", prediction,"=> accuracy", accuracy)
+        print(itr, "- classifier says", classifier, X_test, "are", prediction,"=> accuracy", accuracy)
        
 maxscore = results[max(results, key=results.get)]
 print("The most accurate classifier over", iterations, "iterations is:")
