@@ -42,7 +42,7 @@ Y = ['male', 'male', 'female',
      'male', 'male']
 
 # train and check the model against the test data for each classifier
-iterations = 50
+iterations = 100
 results = {}
 for itr in range(iterations):    
     # Resuffle training/testing datasets by sampling randomly 80/20% of the input data 
@@ -61,7 +61,7 @@ for itr in range(iterations):
         else:
             results[classifier] = accuracy
         
-        print(itr, "- classifier says", classifier, X_test, "are", prediction,"=> accuracy", accuracy)
+        print(itr, "- classifier", classifier, "says", X_test, "are", prediction,"=> accuracy", accuracy)
        
 maxscore = results[max(results, key=results.get)]
 print("The most accurate classifier over", iterations, "iterations is:")
