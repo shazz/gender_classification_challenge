@@ -21,12 +21,12 @@ from sklearn.model_selection import train_test_split
 # Classifiers we'd like to compare
 classifiers = {
         "DecisionTree": DecisionTreeClassifier(),
-        "K-Nearest Neighbors": KNeighborsClassifier(6),
+        "K-Nearest Neighbors": KNeighborsClassifier(3),
         "Linear Support Vector Machine":  SVC(kernel="linear"),
         "Radial Basic Function Support Vector Machine": SVC(kernel="rbf"),
-        "Random Forest": RandomForestClassifier(n_estimators=50),
+        "Random Forest": RandomForestClassifier(),
         "Neural Network": MLPClassifier(alpha=1), 
-        "AdaBoost": AdaBoostClassifier(n_estimators=100),
+        "AdaBoost": AdaBoostClassifier(),
         "Gaussian Naive Bayes": GaussianNB()
     }
     
@@ -34,36 +34,44 @@ classifiers = {
 X = [[181, 80, 44], [177, 70, 43], [160, 60, 38], 
      [154, 54, 37], [166, 65, 40], [190, 90, 47], 
      [175, 64, 39], [177, 70, 40], [159, 55, 37], 
-     [171, 75, 42], [181, 85, 43]]
+     [171, 75, 42], [181, 85, 43], [183, 82, 45],
+     [189, 92, 47], [175, 70, 41], [155, 47, 38],
+     [144, 36, 36], [180, 60, 39], [195, 110, 45]
+     ]
 # labels
 Y = ['male', 'male', 'female', 
      'female', 'male', 'male', 
      'female', 'female', 'female', 
-     'male', 'male']
-
-# Create training/testing datasets by sampling 'randomly' 80/20% of the input data 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+     'male', 'male', 'male',
+     'male', 'male', 'female',
+     'female', 'female', 'male']
 
 # train and check the model against the test data for each classifier
-max_accuracy = 0
-best_classifiers = []
-for classifier in classifiers:
-    clf = classifiers[classifier]
-    clf.fit(X_train, Y_train)
+iterations = len(X)
+results = {}
+for itr in range(iterations):
+    print("Iteration", itr)
     
-    # predict on test data
-    prediction = clf.predict(X_test)
-    # compute accuracy
-    accuracy = accuracy_score(Y_test, prediction)
+    # Resuffle training/testing datasets by sampling randomly 80/20% of the input data 
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)    
     
-    # check if this is the best
-    if accuracy > max_accuracy:
-        best_classifiers = [classifier]
-        max_accuracy = accuracy
-    elif accuracy == max_accuracy:
-        best_classifiers.append(classifier)
-    
-    print("Using classifier", classifier, X_test, "are", prediction,"=> accuracy", accuracy)
-   
-print("The most accurate classifiers are", best_classifiers,"with",max_accuracy*100,"% accuracy")
-
+    for classifier in classifiers:
+        clf = classifiers[classifier]
+        clf.fit(X_train, Y_train)
+        
+        # predict on test data
+        prediction = clf.predict(X_test)
+        # compute accuracy and sum it to the previous ones
+        accuracy = accuracy_score(Y_test, prediction)
+        if classifier in results:
+            results[classifier] = results[classifier] + accuracy
+        else:
+            results[classifier] = accuracy
+        
+        print("Classifier says", classifier, X_test, "are", prediction,"=> accuracy", accuracy)
+       
+maxscore = results[max(results, key=results.get)]
+print("The most accurate classifier over", iterations, "iterations is:")
+for result in results:
+    if results[result] == maxscore:
+        print("\t-",result,"with",results[result]/iterations*100,"% accuracy")
