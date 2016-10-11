@@ -1,45 +1,72 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 10 18:36:22 2016
+#
+# CDC BRFSS Extract data importer
+# Load a TSV extract from the BRFSS 2015 Annual Survey
+# https://www.cdc.gov/brfss/annual_data/annual_2015.html
+#
+# Then convert to metric system and clean it
+# Good tutorial on pandas cleaning: https://github.com/jvns/pandas-cookbook/blob/v0.1/cookbook/Chapter%207%20-%20Cleaning%20up%20messy%20data.ipynb
+# Those nice animals need a good shower
 
-@author: shazz
-"""
+# (C) 2016 - Shazz 
+# Under MIT license
 
-# The usual preamble
 import pandas as pd
 import numpy as np
+import time
 
+# I did not fully understand the warning so I hide it.... "ostrich policy"
 pd.options.mode.chained_assignment = None  # default='warn'
+data = pd.Series()
+isloaded = False
 
 def load_data(row_nb):
-    na_values = ['    ']
-    data = pd.read_csv("data/2015_BRFSS_extract.tsv", sep='\t', header=0, na_values=na_values)
+    # use global variables to avoid recleaning if called again. Better way ?
+    global data
+    global isloaded
     
-    print("data loaded:", data.shape)
+    start_time = time.time()
+    if isloaded == False:
+        
+        na_values = ['    ']
+        data = pd.read_csv("data/2015_BRFSS_extract.tsv", sep='\t', header=0, na_values=na_values, dtype={'HEIG': str})       
+        print("data loaded:", data.shape)
+        
+        # convert to metric system (cm and kg)
+        data['HEIG'] = ((pd.to_numeric(data['HEIG'].str.slice(0, 2))*30.48) + (pd.to_numeric(data['HEIG'].str.slice(2, 4))*2.54)).round(0)
+        data['WEIG'] = (data['WEIG']/2.20462262185).round(0)
+        
+        # remove non sense heights
+        overm_heights = data['HEIG'] >= 300
+        overl_heights = data['HEIG'] == 0
+        data['HEIG'][overm_heights] = np.nan
+        data['HEIG'][overl_heights] = np.nan
+        
+        # remove non sense weights
+        overm_weights = data['WEIG'] >= 400
+        overl_weights = data['WEIG'] == 0
+        data['WEIG'][overm_weights] = np.nan
+        data['WEIG'][overl_weights] = np.nan
     
-    # remove non sense heights
-    overm_heights = data['HEIG'] >= 800
-    overl_heights = data['HEIG'] == 0
-    data['HEIG'][overm_heights] = np.nan
-    data['HEIG'][overl_heights] = np.nan
+        # discard N/A values
+        data = data.dropna()
     
-    # remove non sense weights
-    overm_weights = data['WEIG'] >= 600
-    overl_weights = data['WEIG'] == 0
-    data['WEIG'][overm_weights] = np.nan
-    data['WEIG'][overl_weights] = np.nan
-
-    data = data.dropna()
-
+        process_time = time.time()
+        print("data cleaned:", data.shape, "in ", process_time - start_time, "s")
+        isloaded = True
+    else:
+        print("data already cleaned")
+    
     if row_nb > 0:
-        data = data.iloc[:row_nb, :]
+        print("Genre values:", data['S'].unique())
+        print("Height values:", data['HEIG'].unique())
+        print("Weight values:", data['WEIG'].unique())   
+        subset = data.iloc[:row_nb, :]
+    else:
+        subset = data
     
-    X = data[["WEIG","HEIG"]]   
-    Y = np.ravel(data[["S"]])
+    X = subset[["WEIG","HEIG"]]   
+    Y = np.ravel(subset[["S"]])
     
-    #print("Genre values:", data['S'].unique())
-    #print("Height values:", data['HEIG'].unique())
-    #print("Weight values:", data['WEIG'].unique())
-
+    print("data loaded in ", time.time() - start_time, "s")
+    
     return X, Y
