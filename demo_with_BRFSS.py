@@ -35,11 +35,11 @@ classifiers = {
     }
     
 # load data and convert Y into 1d vector    
-X, Y = data_importer.load_data(1000)    
+X, Y = data_importer.load_data(2000)    
 print("X", X.shape, "Y", Y.shape)
     
 # train and check the model against the test data for each classifier
-iterations = 30
+iterations = 100
 results = {}
 for itr in range(iterations):    
     # Resuffle training/testing datasets by sampling randomly 80/20% of the input data 
@@ -77,9 +77,6 @@ prediction = clf.predict(X_test)
 accuracy = accuracy_score(Y_test, prediction)
 
 print(clf, "accuracy", accuracy)
-print("a person of 220 lb and 6\"00 is probably a", "male" if clf.predict([[220, 600]]) == 1 else "female")
-print("a person of 150 lb and 4\"05 is probably a", "male" if clf.predict([[150, 405]]) == 1 else "female")
-print("a person of 140 lb and 5\"06 is probably a", "male" if clf.predict([[140, 506]]) == 1 else "female")
-
-
-    
+print("a person of 100 kg and 185 cm is probably a", "male" if clf.predict([[100, 185]]) == 1 else "female")
+print("a person of 55 kg and 158 cm is probably a", "male" if clf.predict([[55, 158]]) == 1 else "female")
+print("a person of 40 kg and 148 cm is probably a", "male" if clf.predict([[40, 148]]) == 1 else "female")
