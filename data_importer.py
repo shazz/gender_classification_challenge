@@ -31,9 +31,10 @@ def load_data(row_nb):
         data = pd.read_csv("data/2015_BRFSS_extract.tsv", sep='\t', header=0, na_values=na_values, dtype={'HEIG': str})       
         print("data loaded:", data.shape)
         
-        # convert to metric system (cm and kg)
+        # convert to metric system (cm and kg), and sex to [0-1] values
         data['HEIG'] = ((pd.to_numeric(data['HEIG'].str.slice(0, 2))*30.48) + (pd.to_numeric(data['HEIG'].str.slice(2, 4))*2.54)).round(0)
         data['WEIG'] = (data['WEIG']/2.20462262185).round(0)
+        data['S'] = data['S'] - 1
         
         # remove non sense heights
         overm_heights = data['HEIG'] >= 300
@@ -70,3 +71,4 @@ def load_data(row_nb):
     print("data loaded in ", time.time() - start_time, "s")
     
     return X, Y
+    #return X.as_matrix(), Y
